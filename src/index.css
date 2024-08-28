@@ -1,13 +1,39 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.hide-scrollbar {
+  overflow: hidden; /* WebKit */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer and Edge */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
+/* Custom styles for bronze shiny effect */
+.custom-checkbox {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    appearance: none;
+    border: 2px solid #b08d57; /* Bronze border */
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    background: linear-gradient(145deg, #cd7f32, #8c6239); /* Bronze gradient background */
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(255, 255, 255, 0.3); /* Shiny effect */
+  }
+  .custom-checkbox:checked {
+    border-color: #cd7f32; /* Darker bronze border when checked */
+    background: linear-gradient(145deg, #b08d57, #cd7f32); /* Lighter bronze gradient background */
+  }
+  .custom-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background-color: #ffe4b5; /* Light bronze/gold fill */
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6); /* Glow effect for the shiny look */
+  }
