@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import ToDoList from "./Components/ToDoList/ToDoList";
+import AddCard from "./Components/AddCard/AddCard";
+import EditCard from "./Components/EditCard/EditCard";
 
 function App() {
+  //to load todos from localStorage if available else []
   const loadTodos = () => {
     const savedTodos = localStorage.getItem("todos");
     return savedTodos ? JSON.parse(savedTodos) : [];
@@ -9,43 +12,46 @@ function App() {
 
   const [todos, setTodos] = useState(loadTodos);
   const [showAddTodo, setShowAddTodo] = useState(false);
-  const inputRef = useRef(null);
+  const [showEditTodo, setShowEditTodo] = useState(false);
+  const [editTodo, setEditTodo] = useState(null);
+  const inputAddRef = useRef(null);
+  const inputEditRef = useRef(null);
 
-  function addTodo() {
-    setShowAddTodo(true);
-  }
-
+  //side effect to store todos in localstorage if todos changed
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
 
+  //sideEffect to focus on input field when shoAddTodo changed
   useEffect(() => {
-    if (showAddTodo && inputRef.current) {
-      inputRef.current.focus();
+    if (showAddTodo && inputAddRef.current) {
+      inputAddRef.current.focus();
     }
   }, [showAddTodo]);
 
-  const closeAddTodo = () => {
-    setShowAddTodo(false);
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter" && inputRef.current.value.trim() !== "") {
-      submitNewTodo();
+  //sideEffect to focus on input field when shoEditTodo changed
+  useEffect(() => {
+    if (showEditTodo && inputEditRef.current) {
+      inputEditRef.current.focus();
     }
-  };
+  }, [editTodo]);
 
+  //function to add todo if not empty
   const submitNewTodo = () => {
-    const todoText = inputRef.current.value;
+    const todoText = inputAddRef.current.value;
     if (todoText.trim() !== "") {
       setTodos([
-        { id: todos.length + 2, text: todoText, completed: false },
+        { id: todos.length + 1, text: todoText, completed: false },
         ...todos,
       ]);
-      inputRef.current.value = "";
+      inputAddRef.current.value = "";
       setShowAddTodo(false);
     }
   };
+
+  // submitEditTodo(){
+
+  // }
 
   return (
     <div className="flex flex-col h-screen bg-[#0e1c26]">
@@ -57,19 +63,22 @@ function App() {
           border: "1px solid rgba(255, 255, 255, 0.18)",
           display: "flex",
           flexDirection: "column",
-          maxHeight: '95vh',
+          maxHeight: "95vh",
         }}
       >
         <div className="border-b border-gray-100 flex items-center justify-between p-4">
           <div className="flex items-center gap-2">
             <img
-              src="/logo1.jpeg"
-              alt=""
+              src={process.env.PUBLIC_URL + "/logo.jpeg"}
+              alt="logo"
               className="w-12 h-12 rounded-xl"
             />
-            <h4 className="text-lg">ToDo</h4>
+            <h2 className="text-lg font-bold">ToDo</h2>
           </div>
-          <button className="rounded-xl border px-3 py-2" onClick={addTodo}>
+          <button
+            className="rounded-xl border px-3 py-2"
+            onClick={() => setShowAddTodo(true)}
+          >
             Add
           </button>
         </div>
@@ -78,35 +87,33 @@ function App() {
           className="flex-grow p-4 hide-scrollbar"
           style={{ overflowY: "auto" }}
         >
-          <ToDoList todos={todos} setTodos={setTodos} />
+          <ToDoList
+            todos={todos}
+            setTodos={setTodos}
+            setShowEditTodo={setShowEditTodo}
+            setEditTodo={setEditTodo}
+            inputEditRef={inputEditRef}
+          />
         </div>
       </div>
 
+      {/* component to add new todo */}
       {showAddTodo && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-11/12 md:w-1/2 lg:w-1/3">
-            <h2 className="text-lg font-bold mb-4">Add a New Todo</h2>
-            <input
-              type="text"
-              ref={inputRef}
-              placeholder="Enter todo"
-              className="border border-gray-300 rounded p-2 w-full mb-4"
-              onKeyDown={handleKeyDown}
-            />
-            <button
-              onClick={submitNewTodo}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Submit
-            </button>
-            <button
-              onClick={closeAddTodo}
-              className="ml-4 bg-red-500 text-white px-4 py-2 rounded"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+        <AddCard
+          setShowAddTodo={setShowAddTodo}
+          submitNewTodo={submitNewTodo}
+          inputAddRef={inputAddRef}
+        />
+      )}
+      {/* component to add new todo */}
+      {showEditTodo && (
+        <EditCard
+          setTodos={setTodos}
+          setShowEditTodo={setShowEditTodo}
+          editTodo={editTodo}
+          inputEditRef={inputEditRef}
+          todos={todos}
+        />
       )}
     </div>
   );
