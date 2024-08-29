@@ -34,7 +34,7 @@ function App() {
     if (showEditTodo && inputEditRef.current) {
       inputEditRef.current.focus();
     }
-  }, [editTodo]);
+  }, [showEditTodo]);
 
   //function to add todo if not empty
   const submitNewTodo = () => {
@@ -48,10 +48,6 @@ function App() {
       setShowAddTodo(false);
     }
   };
-
-  // submitEditTodo(){
-
-  // }
 
   return (
     <div className="flex flex-col h-screen bg-[#0e1c26]">
